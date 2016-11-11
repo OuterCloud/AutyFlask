@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<script type="text/javascript">
+author = "{{author}}"
+window.onload = function(){
+	document.getElementById("tylanInput").title="请输入Auty根目录路径";
+}
+function ck(b){
+	var inputs = document.getElementsByTagName("input");
+	for(var i=0; i<inputs.length; i++){
+		if (inputs[i].type=="checkbox") {
+			inputs[i].checked = b;
+		}
+	}
+}
+function geneSelection() {
+	var inputs = document.getElementsByTagName("input");
+	var selection = [];
+	var j = 0;
+	for (var i = 0; i < inputs.length; i++) {
+		if (inputs[i].type=="checkbox" && inputs[i].checked==true) {
+			selection[j++] = inputs[i].nextSibling.nodeValue;
+		}
+	}
+	if(selection == ""){
+		alert("你都没选！")
+	}else{
+		var params = {};
+		params["key"] = selection;
+		params["autyPath"] = $("#tylanInput").val();
+		$.post("/dealSelection",params,function(data,status){
+			alert(data);
+		});
+	}
+}
+function category() {
+	alert("想得美。");
+}
+function startTest() {
+	var params = {};
+	params["autyPath"] = $("#tylanInput").val();
+	$.post("/startTest",params,function(data,value){
+		alert(data);
+	});
+}
+function showResult() {
+	var params = {};
+	params["autyPath"] = $("#tylanInput").val();
+	$.post("/showResult",params,function(data,value){
+		if(data == "fail"){
+			alert("没找到测试结果存放的文件夹！");
+		}else{
+			alert("请前往"+data+"查看测试结果！");
+		}
+	});
+}
+function contact() {
+	alert("QQ:434209210，添加好友请注明“Auty”。");
+}
+</script>
+<form id="autyForm" action="" method="post" name="autyInput">
+	<div id="tylan">
+		{{form.hidden_tag()}}
+		{{form.tylanInput(value="/Users/tylan/Desktop/AutyFlask/Auty")}}
+		{% for error in form.tylanInput.errors %}
+		<span style="color: red;">
+			[{{ error }}]
+		</span>>
+		{% endfor%}
+		<hr/>
+		<input id="tylanSubmit" type="submit" name="start" value="生成测试用例清单">
+		{% if selections != "" %}
+		<input type="button" class="check_button" onclick="ck(true)" value="全选">
+		<input type="button" class="check_button" onclick="ck(false)" value="取消全选">
+		<input type="button" class="check_button" onclick="category()" value="按文件夹分类">
+		<input type="button" class="auty_button" onclick="geneSelection()" value="生成测试集">
+		<input type="button" class="auty_button" onclick="startTest()" value="开始测试">
+		<input type="button" class="auty_button" onclick="showResult()" value="查看测试结果">
+		<input type="button" class="auty_button" onclick="contact()" value="联系作者">
+		</br>
+		{% endif %}
+	</div>
+	{% for selection in selections %}
+	<input type="checkbox" name="check">{{selection}}<br>
+	{% endfor %}
+</form>
+{% endblock%}

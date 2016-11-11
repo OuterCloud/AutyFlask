@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		{% if title %}
+		<title>{{title}}</title>
+		{% else %}
+		<title>Auty</title>
+		{% endif %}
+		<style type="text/css">
+			body{
+				font-size: 12pt;
+				line-height: 30px;
+				background-color: #080808;
+				color: #00FFFF;
+			}
+			#tylanInput{
+				width: 100%;
+				height: 30px;
+				font-size: 12pt;
+				/*background-color: #00FFFF;*/
+				border: 0;
+			}
+			#tylanSubmit,.check_button,.auty_button{
+				width: 146px;
+				height: 30px;
+				font-size: 12pt;
+				cursor: pointer;
+				border: 0;
+			}
+			#tylanSubmit:hover{
+				background-color: #999999;
+			}
+			.check_button:hover{
+				background-color: #66CC99;
+			}
+			.auty_button:hover{
+				background-color: #99CCFF;
+			}
+			.navi{
+				width: 100%;
+			}
+			.navi_cell{
+				width: 24.2%;
+				display: inline-block;
+				/*border-style: outset;*/
+				cursor: pointer;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="navi">
+			<div class="navi_cell" onclick="window.open('/index','_self')">Auty首页</div>
+			<div class="navi_cell" onclick="window.open('https://github.com/OuterCloud/Auty')">Github</div>
+			<div class="navi_cell" onclick="window.open('http://www.cnblogs.com/LanTianYou/p/5952472.html')">文档</div>
+			<div class="navi_cell" onclick="window.open('http://www.pythondoc.com')">学习python</div>
+		</div>
+		<hr/>
+		{% block content %}{% endblock %}
+	</body>
+</html>
