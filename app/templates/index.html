@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 <script type="text/javascript">
-author = "{{author}}"
-window.onload = function(){
-	document.getElementById("tylanInput").title="请输入Auty根目录路径";
-}
 function ck(b){
 	var inputs = document.getElementsByTagName("input");
 	for(var i=0; i<inputs.length; i++){
@@ -12,6 +8,20 @@ function ck(b){
 			inputs[i].checked = b;
 		}
 	}
+}
+function geneList() {
+	var params = {};
+	params["autyPath"] = $("#tylanInput").val();
+	$.post("/index",params,function(data,value){
+		document.getElementById("casesList").innerHTML = "<hr/>";
+		var selections = data["selections"];
+		for (var i = 0; i <= selections.length; i++) {
+			if(selections[i] != ""){
+				var insertHtml = "<input type='checkbox' name='check'>"+selections[i].replace(/[\r\n]/g,"")+"<br>";
+				document.getElementById("casesList").innerHTML += insertHtml;
+			}
+		}
+	});
 }
 function geneSelection() {
 	var inputs = document.getElementsByTagName("input");
@@ -58,30 +68,18 @@ function contact() {
 	alert("QQ:434209210，添加好友请注明“Auty”。");
 }
 </script>
-<form id="autyForm" action="" method="post" name="autyInput">
-	<div id="tylan">
-		{{form.hidden_tag()}}
-		{{form.tylanInput(value="/Users/tylan/Desktop/AutyFlask/Auty")}}
-		{% for error in form.tylanInput.errors %}
-		<span style="color: red;">
-			[{{ error }}]
-		</span>>
-		{% endfor%}
-		<hr/>
-		<input id="tylanSubmit" type="submit" name="start" value="生成测试用例清单">
-		{% if selections != "" %}
-		<input type="button" class="check_button" onclick="ck(true)" value="全选">
-		<input type="button" class="check_button" onclick="ck(false)" value="取消全选">
-		<input type="button" class="check_button" onclick="category()" value="按文件夹分类">
-		<input type="button" class="auty_button" onclick="geneSelection()" value="生成测试集">
-		<input type="button" class="auty_button" onclick="startTest()" value="开始测试">
-		<input type="button" class="auty_button" onclick="showResult()" value="查看测试结果">
-		<input type="button" class="auty_button" onclick="contact()" value="联系作者">
-		</br>
-		{% endif %}
-	</div>
-	{% for selection in selections %}
-	<input type="checkbox" name="check">{{selection}}<br>
-	{% endfor %}
-</form>
+<div id="tylan">
+	<input type="text" id="tylanInput" title="请输入Auty根目录路径" value="/Users/tylan/Desktop/AutyFlask/Auty">
+	<hr/>
+	<input id="tylanSubmit" type="button" onclick="geneList()" value="生成测试用例清单">
+	<input type="button" class="check_button" onclick="ck(true)" value="全选">
+	<input type="button" class="check_button" onclick="ck(false)" value="取消全选">
+	<input type="button" class="check_button" onclick="category()" value="按文件夹分类">
+	<input type="button" class="auty_button" onclick="geneSelection()" value="生成测试集">
+	<input type="button" class="auty_button" onclick="startTest()" value="开始测试">
+	<input type="button" class="auty_button" onclick="showResult()" value="查看测试结果">
+	<input type="button" class="auty_button" onclick="contact()" value="联系作者">
+	</br>
+	<div id="casesList"><hr/></div>
+</div>
 {% endblock%}

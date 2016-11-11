@@ -1,38 +1,38 @@
-from flask import render_template,request
+from flask import render_template,request,jsonify
 from app import app
 import requests,os,subprocess,time
 from bs4 import BeautifulSoup
-from .forms import AutyForm
 
 @app.route("/",methods=["GET","POST"])
 @app.route("/index",methods=["GET","POST"])
 def index():
-	title = "Auty首页"
-	form = AutyForm()
 	if request.method == "POST":
-		autyPath = request.form['tylanInput']
-	else:
-		autyPath = ""
-	#调用create_selection.py生成selections文件然后把内容显示出来
-	if autyPath != "":
-		createSelectionsPath = os.path.join(autyPath,"scripts","create_selection.py")
-		if os.path.exists(createSelectionsPath):
-			subprocess.Popen(["python",createSelectionsPath])
-			time.sleep(1)
-			selectionsPath = os.path.join(autyPath,"scripts","all_scripts_selection.txt")
-			with open(selectionsPath) as selections:
-				selections = selections.readlines()
+		selections = ""
+		autyPath = request.form.get("autyPath")
+		if autyPath != "":
+			createSelectionsPath = os.path.join(autyPath,"scripts","create_selection.py")
+			if os.path.exists(createSelectionsPath):
+				subprocess.Popen(["python",createSelectionsPath])
+				time.sleep(1)
+				selectionsPath = os.path.join(autyPath,"scripts","all_scripts_selection.txt")
+				with open(selectionsPath) as selections:
+					selections = selections.readlines()
+					#print(selections[len(selections)-1])
+			else:
+				selections = ""
 		else:
 			selections = ""
+		result = {}
+		result["selections"] = selections
+		return jsonify(result)
 	else:
-		selections = ""
-	return render_template("index.html",title=title,autyPath=autyPath,form=form,selections=selections,author="Author:Tylan")
+		return render_template("/index.html")
 
 @app.route("/dealSelection",methods=["POST"])
 def dealSelection():
 	if request.method == "POST":
 		selection = request.form.getlist('key[]')
-		autyPath = request.form.get('autyPath')
+		autyPath = request.form.get("autyPath")
 		with open(os.path.join(autyPath,"scripts","selections","selection.txt"),"w") as content:
 			for sele in selection:
 				content.write(sele)
