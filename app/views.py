@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 from flask import render_template,request,jsonify
 from app import app
 import requests,os,subprocess,time
-from bs4 import BeautifulSoup
 
 @app.route("/",methods=["GET","POST"])
 @app.route("/index",methods=["GET","POST"])
